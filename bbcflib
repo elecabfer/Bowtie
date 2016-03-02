@@ -2,12 +2,9 @@
 from bbcflib import mapseq
 for i in range(1,3):
         mapseq.add_nh_flag('../'+str(i)+'_16S_SILVA.sam', out='../'+str(i)+'_nh.bam')
-
-
 #########################
 samtools sort "$i"_nh.bam "$i"_nh_s.bam
 samtools view -F0x4 	"$i"_nh_s.bam | cut -f 3 | uniq -c > "$i"_counts2.txt
 
 ################################# SACAR DATOS DE UNA ESPECIE
-
 bam2density -s "$i"_nh_s.bam -p 0 -a NC_013194 -o "i"_coverage_caccumulibacter.wig
