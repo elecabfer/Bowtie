@@ -3,7 +3,10 @@ source /mnt/common/epfl/etc/bbcf_bashrc ### para llamar a todos los programas de
 from bbcflib import mapseq
 for i in range(1,3):
         mapseq.add_nh_flag('../'+str(i)+'_16S_SILVA.sam', out='../'+str(i)+'_nh.bam')
-#########################
+#########################lo mismo pero mas facil
+
+
+############################
 samtools sort "$i"_nh.bam "$i"_nh_s.bam
 samtools view -F0x4 	"$i"_nh_s.bam | cut -f 3 | uniq -c > "$i"_counts2.txt   
 ##-F Do not output alignments with any bits set in INT present in the FLAG field. 
