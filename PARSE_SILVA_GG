@@ -1,0 +1,47 @@
+###################### parse greengenes
+tax=open('/scratch/cluster/monthly/ecabello/Aline/gg_13_5_taxonomy.txt', 'r').read()
+entry=tax.split('\n')
+dic={}
+for e in entry:
+        if "k__" in e:
+                id=e[:e.index('k__')-1]
+                genero=e[e.index('g__')+3:e.index('; s__')]
+                especie=e[e.index('s__')+3:]
+                name=genero+' '+especie
+                dic[id]=name
+print len(dic)
+##################### parse silva
+taxsilva=open('/scratch/cluster/monthly/ecabello/Aline/silva_header.txt', 'r').read().split('\n')
+dicsilva={}
+for t in taxsilva:
+        if ">" in t:
+                idsilva=t[1:t.index(' ')]#-1]
+                #genero=e[e.index('g__')+3:e.index('; s__')]
+                #especie=e[e.index('s__')+3:]
+                sep=t.split(';')
+                print idsilva
+                namesilva=sep[-1]
+                dicsilva[idsilva]=namesilva
+############# Archivos granules
+
+for i in range(2, 3):
+        granule=open('/scratch/cluster/monthly/ecabello/Aline/48_granules/silva_gg/'+str(i)+'_counts.txt', 'r').read().split('\n')
+        output=open('/scratch/cluster/monthly/ecabello/Aline/48_granules/silva_gg/output_granule_'+str(i)+'_sgg.txt', 'w')
+        count=[]
+        especies=[]
+        #identlist=[]
+        for g in granule:
+                if len(g)>8 and "KC" not in g: ######GREENGENES
+                        while g[0] == ' ': #erase extra espaces at the begginig
+                                g=g[1:]
+                        ident=g[2:]
+                        #print ident, str(len(ident))
+                        if ident in dic and  dic[ident] not in especies and ' ' not in ident: #if it is a new specie
+                                especies.append(dic[ident])
+                                count.append(int(g[0]))
+                                #identlist.append(ident)
+                        elif ident in dic and dic[ident] in especies: #if the specie name is already in the list, sum the counts
+                                count[especies.index(dic[ident])]+=int(g[0])
+        for c in range(0, len(count)):
+                output.write(str(count[c])+str(especies[c])+'\n')
+print len(especies), len(count)
